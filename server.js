@@ -4,9 +4,13 @@ import "dotenv/config.js";
 import cors from "cors";
 // Create an instance of Express
 const app = express();
+import userRoutes from './Routers/user.js'
+
 
 app.use(express.json());
 app.use(cors());
+app.get('/t',(req,res)=>{res.send('hello')})
+app.use('/users',userRoutes)
 
 // Define your routes or other middleware here
 
