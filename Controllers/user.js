@@ -1,4 +1,6 @@
 import  Wallet  from '../models/wallet.js';
+import  User  from '../models/user.js';
+
 // function for retrieving a user with their wallet
 const getUserWallet=async(req, res)=>{
     try {
