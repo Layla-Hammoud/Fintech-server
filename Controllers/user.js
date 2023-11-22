@@ -3,7 +3,7 @@ import  Wallet  from '../models/wallet.js';
 const getUserWallet=async(req, res)=>{
     try {
       const userId = req.params.userId; 
-      const userWallet = await Wallet.findOne({ where: { user_id: userId } });
+      const userWallet = await User.findByPk(userId, { include: Wallet });
       res.status(200).json({ userWallet :userWallet });
   
     } catch (error) {
