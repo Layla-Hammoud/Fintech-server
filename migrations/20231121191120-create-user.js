@@ -2,27 +2,30 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Wallets', {
+    await queryInterface.createTable('Users', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      user_id: {
-        type: Sequelize.INTEGER,
+      user_name: {
+        type: Sequelize.STRING,
         allowNull: false,
-        unique: true, // Ensure each user has only one wallet
-        references: {
-          model: 'Users', // Referencing the Users table
-          key: 'id',      // Referencing the id column in the Users table
-        },
       },
-      usdBalance: {
-        type: Sequelize.INTEGER
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique:true
       },
-      usdtBalance: {
-        type: Sequelize.INTEGER
+      password: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      user_role: {
+        type: Sequelize.ENUM('merchant', 'user', 'admin'), 
+        defaultValue: 'user', 
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
@@ -35,6 +38,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Wallets');
+    await queryInterface.dropTable('Users');
   }
 };

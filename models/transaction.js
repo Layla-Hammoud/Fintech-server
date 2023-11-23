@@ -1,8 +1,4 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import { Model, DataTypes } from 'sequelize';
   class Transaction extends Model {
     /**
      * Helper method for defining associations.
@@ -11,16 +7,19 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Transaction.hasOne(models.Notification, {
+        foreignKey: 'notification_id', // The foreign key in Transaction referencing Notification
+        as: 'notification', // Alias for the association
+      });
     }
   }
   Transaction.init({
     amountSent: DataTypes.INTEGER,
     amountReceived: DataTypes.INTEGER,
     type: DataTypes.ENUM('transfer', 'transaction', 'withdraw'),
-    status: DataTypes.ENUM('pending', 'completed'),
+    status: DataTypes.ENUM('pending', 'completed','canceled'),
     sender_id: DataTypes.INTEGER,
     receiver_id: DataTypes.INTEGER,
-    notificantion_id: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Transaction',
@@ -38,12 +37,6 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
-  Transaction.associate = (models) => {
-    Transaction.belongsTo(models.Notification, {
-      foreignKey: 'notification_id', // The foreign key in Transaction referencing Notification
-      as: 'notification', // Alias for the association
-    });
-  };
 
-  return Transaction;
-};
+
+export default Transaction;

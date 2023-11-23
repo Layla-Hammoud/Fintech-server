@@ -2,42 +2,40 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Notifications', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      user_name: {
-        type: Sequelize.STRING,
+      transaction_id: {
         allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Transactions', // Referencing the transactions table
+          key: 'id',        // Referencing the id column in Wallets
+        },
       },
-      email: {
-        type: Sequelize.STRING,
+      title: {
         allowNull: false,
-        unique:true
+        type: Sequelize.STRING
       },
-      password: {
-        type: Sequelize.STRING,
+      message: {
         allowNull: false,
+        type: Sequelize.STRING
       },
-      user_role: {
-        type: Sequelize.ENUM('merchant', 'user', 'admin'), 
-        defaultValue: 'user', 
-        allowNull: false,
-      },
-      created_at: {
+      createdAt: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updated_at: {
+      updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('Notifications');
   }
 };

@@ -1,20 +1,16 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import { Model, DataTypes } from 'sequelize';
+
   class Notification extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
+      Notification.belongsTo(models.Transaction, {
+        foreignKey: 'notification_id',
+        as: 'transaction',
+      });
     }
   }
+
   Notification.init({
-    user_id: DataTypes.INTEGER,
+    transaction_id: DataTypes.INTEGER,
     title: DataTypes.STRING,
     message: DataTypes.STRING
   }, {
@@ -22,12 +18,5 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Notification',
   });
 
-  Notification.associate = (models) => {
-    Notification.hasOne(models.Transaction, {
-      foreignKey: 'notification_id', // The foreign key in Transaction referencing Notification
-      as: 'transaction', // Alias for the association
-    });
-  };
+export default Notification;
 
-  return Notification;
-};

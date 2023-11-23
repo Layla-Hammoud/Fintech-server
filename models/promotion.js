@@ -1,8 +1,4 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import { Model, DataTypes } from 'sequelize';
   class Promotion extends Model {
     /**
      * Helper method for defining associations.
@@ -11,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Promotion.belongsTo(models.User, {
+        foreignKey: 'merchant_id', // The foreign key in Promotion referencing User (merchant)
+        as: 'merchant', // Alias for the association
+      });
     }
   }
   Promotion.init({
@@ -26,12 +26,4 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Promotion',
   });
 
-  Promotion.associate = (models) => {
-    Promotion.belongsTo(models.User, {
-      foreignKey: 'merchant_id', // The foreign key in Promotion referencing User (merchant)
-      as: 'merchant', // Alias for the association
-    });
-  };
-
-  return Promotion;
-};
+export default Promotion;

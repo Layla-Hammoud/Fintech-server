@@ -1,16 +1,24 @@
-import  User  from '../models/user.js';
-import Wallet from '../models/wallet.js';
-// function for retrieving a user with their wallet
+// import { DatabaseError } from 'sequelize';
+import db from '../models/index.js'
+
+const {UserModel,WalletModel} = db
+
 const getUserWallet=async(req, res)=>{
     try {
-      const userId = req.params.userId; 
-      const userWallet = await Wallet.findByPk(userId, { include: 'user' });
-      res.status(200).json({ userWallet :userWallet });
+     const id = req.params.id;
+     console.log(id);
+      const userWallet = await WalletModel.findAll();
+      if (userWallet) { 
+        res.status(200).json({ user:userWallet});
+      } else {
+        console.log('User not found');
+      }
+      
   
     } catch (error) {
       console.log(error);
       res.status(500).send('Internal Server Error');
     }
   }
-  
+ 
   export { getUserWallet };

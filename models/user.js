@@ -1,28 +1,25 @@
-import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/db.js';
+import { Model } from 'sequelize';
 
 
+export default (sequelize,DataTypes)=>{
   class User extends Model {
     static associate(models) {
-      User.hasMany(models.Transaction, {
-        foreignKey: 'sender_id',
-        as: 'sentTransactions',
-      });
+      // User.hasMany(models.Transaction, {
+      //   foreignKey: 'sender_id',
+      //   as: 'sentTransactions',
+      // });
 
-      User.hasMany(models.Transaction, {
-        foreignKey: 'receiver_id',
-        as: 'receivedTransactions',
-      });
+      // User.hasMany(models.Transaction, {
+      //   foreignKey: 'receiver_id',
+      //   as: 'receivedTransactions',
+      // });
 
-      User.hasOne(models.Wallet, {
-        foreignKey: 'user_id',
-        as: 'wallet',
-      });
+      User.hasOne(models.WalletModel);
 
-      User.hasMany(models.Promotion, {
-        foreignKey: 'merchant_id',
-        as: 'promotions',
-      });
+      // User.hasMany(models.Promotion, {
+      //   foreignKey: 'merchant_id',
+      //   as: 'promotions',
+      // });
     }
   }
 
@@ -36,6 +33,8 @@ import sequelize from '../config/db.js';
     {
       sequelize,
       modelName: 'User',
+      timestamps: true,
     }
   );
-  export default User
+  return User;
+}

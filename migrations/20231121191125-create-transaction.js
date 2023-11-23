@@ -23,9 +23,9 @@ module.exports = {
         allowNull: false,
       },
       status: {
-        type: Sequelize.ENUM('pending', 'completed'),
+        type: Sequelize.ENUM('pending', 'completed','canceled'),
       },
-      sender_id: {
+      sender_id: { 
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
@@ -40,14 +40,6 @@ module.exports = {
           model: 'Users', // Referencing the Users table
           key: 'id',      // Referencing the id column in the Users table
         },
-      },
-      notification_id: {
-        type: Sequelize.INTEGER,
-        allowNull: true, // Depending on your requirement
-        references: {
-          model: 'Notifications', // Referencing the Notifications table
-          key: 'id',              // Referencing the id column in Notifications
-        }
       },
       createdAt: {
         allowNull: false,

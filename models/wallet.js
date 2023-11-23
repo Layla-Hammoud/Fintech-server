@@ -1,18 +1,23 @@
 import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/db.js';
+
+
+
+export default (sequelize,DataTypes)=>{
   class Wallet extends Model {
     static associate(models) {
-      Wallet.belongsTo(models.User, {
+      Wallet.belongsTo(models.UserModel, {
         foreignKey: 'user_id',
         as: 'user',
-      });
-
-      Wallet.hasMany(models.Saving, {
-        foreignKey: 'wallet_id',
-        as: 'savings',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       });
+
+      // Wallet.hasMany(models.Saving, {
+      //   foreignKey: 'wallet_id',
+      //   as: 'savings',
+      //   onDelete: 'CASCADE',
+      //   onUpdate: 'CASCADE',
+      // });
     }
   }
 
@@ -26,6 +31,8 @@ import sequelize from '../config/db.js';
       sequelize,
       modelName: 'Wallet',
     }
+    
   );
+ return Wallet;
+  }
 
-export default Wallet

@@ -1,8 +1,4 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import { Model, DataTypes } from 'sequelize';
   class Saving extends Model {
     /**
      * Helper method for defining associations.
@@ -11,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Saving.belongsTo(models.Wallet, {
+        foreignKey: 'wallet_id', // The foreign key in Saving referencing Wallet
+        as: 'wallet', // Alias for the association
+      });
     }
   }
   Saving.init({
@@ -24,12 +24,5 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Saving',
   });
 
-  Saving.associate = (models) => {
-    Saving.belongsTo(models.Wallet, {
-      foreignKey: 'wallet_id', // The foreign key in Saving referencing Wallet
-      as: 'wallet', // Alias for the association
-    });
-  };
 
-  return Saving;
-};
+  export default Saving;
