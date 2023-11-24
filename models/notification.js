@@ -1,16 +1,19 @@
 import { Model, DataTypes } from 'sequelize';
+export default (sequelize,DataTypes)=>{
 
   class Notification extends Model {
     static associate(models) {
-      Notification.belongsTo(models.Transaction, {
-        foreignKey: 'notification_id',
+      Notification.belongsTo(models.TransactionModel, {
+        foreignKey: 'NotificationId',
         as: 'transaction',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       });
     }
   }
 
   Notification.init({
-    transaction_id: DataTypes.INTEGER,
+    TransactionId: DataTypes.INTEGER,
     title: DataTypes.STRING,
     message: DataTypes.STRING
   }, {
@@ -18,5 +21,7 @@ import { Model, DataTypes } from 'sequelize';
     modelName: 'Notification',
   });
 
-export default Notification;
+return Notification;
+
+}
 

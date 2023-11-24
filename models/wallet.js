@@ -10,12 +10,12 @@ export default (sequelize,DataTypes)=>{
         onUpdate: 'CASCADE',
       });
 
-      // Wallet.hasMany(models.Saving, {
-      //   foreignKey: 'wallet_id',
-      //   as: 'savings',
-      //   onDelete: 'CASCADE',
-      //   onUpdate: 'CASCADE',
-      // });
+      Wallet.hasMany(models.SavingModel, {
+        foreignKey: 'WalletId',
+        as: 'savings',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      });
     }
   }
 

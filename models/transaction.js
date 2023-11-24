@@ -1,5 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
-  class Transaction extends Model {
+export default (sequelize,DataTypes)=>{
+
+class Transaction extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -7,19 +9,25 @@ import { Model, DataTypes } from 'sequelize';
      */
     static associate(models) {
       // define association here
-      Transaction.hasOne(models.Notification, {
-        foreignKey: 'notification_id', // The foreign key in Transaction referencing Notification
-        as: 'notification', // Alias for the association
+      Transaction.hasOne(models.NotificationModel, {
+        foreignKey: 'NotificationId',
+        as: 'notification',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       });
 
-      Transaction.belongsTo(models.User, {
-        foreignKey: 'sender_id', // Assuming sender_id in Transaction table references User
-        as: 'sender', // Alias for the association
+      Transaction.belongsTo(models.UserModel, {
+        foreignKey: 'senderId',
+        as: 'sender', 
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       });
   
-      Transaction.belongsTo(models.User, {
-        foreignKey: 'receiver_id', // Assuming receiver_id in Transaction table references User
-        as: 'receiver', // Alias for the association
+      Transaction.belongsTo(models.UserModel, {
+        foreignKey: 'receiverId', 
+        as: 'receiver',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       });
     }
   }
@@ -28,11 +36,12 @@ import { Model, DataTypes } from 'sequelize';
     amountReceived: DataTypes.INTEGER,
     type: DataTypes.ENUM('transfer', 'transaction', 'withdraw'),
     status: DataTypes.ENUM('pending', 'completed','canceled'),
-    sender_id: DataTypes.INTEGER,
-    receiver_id: DataTypes.INTEGER,
+    senderId: DataTypes.INTEGER,
+    receiverId: DataTypes.INTEGER,
   }, {
     sequelize,
-    modelName: 'Tra2nsaction',
+    modelName: 'Transaction',
   });
 
-export default Transaction;
+  return Transaction;
+}

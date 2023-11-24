@@ -18,7 +18,7 @@ module.exports = {
       amount: {
         type: Sequelize.INTEGER
       },
-      wallet_id: {
+      walletId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {

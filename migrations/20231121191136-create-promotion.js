@@ -27,7 +27,7 @@ module.exports = {
       endDate: {
         type: Sequelize.DATE
       },
-      merchant_id: {
+      MerchantId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {

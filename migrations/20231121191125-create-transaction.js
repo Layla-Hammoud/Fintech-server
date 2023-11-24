@@ -25,7 +25,7 @@ module.exports = {
       status: {
         type: Sequelize.ENUM('pending', 'completed','canceled'),
       },
-      sender_id: { 
+      senderId: { 
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
@@ -33,7 +33,7 @@ module.exports = {
           key: 'id',      // Referencing the id column in the Users table
         },
       },
-      receiver_id: {
+      receiverId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {

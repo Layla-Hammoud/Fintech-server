@@ -1,4 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
+export default (sequelize,DataTypes)=>{
+
   class Saving extends Model {
     /**
      * Helper method for defining associations.
@@ -7,9 +9,11 @@ import { Model, DataTypes } from 'sequelize';
      */
     static associate(models) {
       // define association here
-      Saving.belongsTo(models.Wallet, {
-        foreignKey: 'wallet_id', // The foreign key in Saving referencing Wallet
+      Saving.belongsTo(models.WalletModel, {
+        foreignKey:'WalletId', // The foreign key in Saving referencing Wallet
         as: 'wallet', // Alias for the association
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       });
     }
   }
@@ -18,11 +22,12 @@ import { Model, DataTypes } from 'sequelize';
     goalAmount: DataTypes.INTEGER,
     amount: DataTypes.INTEGER,
     status: DataTypes.ENUM('completed', 'incompleted'),
-    wallet_id: DataTypes.INTEGER,
+    WalletId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Saving',
   });
 
 
-  export default Saving;
+  return Saving;
+}
