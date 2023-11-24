@@ -16,6 +16,8 @@ const getUserWallet=async(req, res)=>{
         res.status(200).json({ user:userWallet});
       } else {
         console.log('User not found');
+      res.status(500).send('user Not found');
+
       }
       
   
