@@ -10,12 +10,12 @@ import userRoutes from './Routers/user.js'
 
 app.use(express.json());
 app.use(cors());
-app.get('/t',(req,res)=>{res.send('hello')})
-app.use('/users',userRoutes)
 
-// Define your routes or other middleware here
+
 app.use("/api/users", userRoute);
-// Define the port where your application will listen
+
+
+//the port where your application will listen
 const port = process.env.PORT || 3000;
 
 // Start the server
