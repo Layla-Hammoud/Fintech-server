@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "team1fintech",
-    "password": "Team1Fintech",
+    "username": "root",
+    "password": null,
     "database": "ewallet",
-    "host": "db4free.net",
+    "host": "localhost",
     "port":3306,
     "dialect": "mysql"
   },
