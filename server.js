@@ -5,7 +5,7 @@ import userRoute from './routes/user.js'
 import db from './models/index.js'
 // Create an instance of Express
 const app = express();
-import userRoutes from './Routers/user.js'
+
 
 
 app.use(express.json());

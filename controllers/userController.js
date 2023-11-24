@@ -7,7 +7,11 @@ const getUserWallet=async(req, res)=>{
     try {
      const id = req.params.id;
      console.log(id);
-      const userWallet = await WalletModel.findAll();
+     const userWallet = await UserModel.findOne({
+      where: { id: id },
+      include: WalletModel,
+    });
+  
       if (userWallet) { 
         res.status(200).json({ user:userWallet});
       } else {

@@ -16,6 +16,7 @@ const sequelize = new Sequelize(
   }
 );
 
+
 const UserModel = User(sequelize,Sequelize)
 const WalletModel = Wallet(sequelize,Sequelize)
 

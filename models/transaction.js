@@ -11,6 +11,16 @@ import { Model, DataTypes } from 'sequelize';
         foreignKey: 'notification_id', // The foreign key in Transaction referencing Notification
         as: 'notification', // Alias for the association
       });
+
+      Transaction.belongsTo(models.User, {
+        foreignKey: 'sender_id', // Assuming sender_id in Transaction table references User
+        as: 'sender', // Alias for the association
+      });
+  
+      Transaction.belongsTo(models.User, {
+        foreignKey: 'receiver_id', // Assuming receiver_id in Transaction table references User
+        as: 'receiver', // Alias for the association
+      });
     }
   }
   Transaction.init({
@@ -22,21 +32,7 @@ import { Model, DataTypes } from 'sequelize';
     receiver_id: DataTypes.INTEGER,
   }, {
     sequelize,
-    modelName: 'Transaction',
+    modelName: 'Tra2nsaction',
   });
-
-  Transaction.associate = (models) => {
-    Transaction.belongsTo(models.User, {
-      foreignKey: 'sender_id', // Assuming sender_id in Transaction table references User
-      as: 'sender', // Alias for the association
-    });
-
-    Transaction.belongsTo(models.User, {
-      foreignKey: 'receiver_id', // Assuming receiver_id in Transaction table references User
-      as: 'receiver', // Alias for the association
-    });
-  };
-
-
 
 export default Transaction;

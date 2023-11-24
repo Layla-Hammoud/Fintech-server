@@ -1,6 +1,5 @@
 import { Model } from 'sequelize';
 
-
 export default (sequelize,DataTypes)=>{
   class User extends Model {
     static associate(models) {
@@ -25,10 +24,10 @@ export default (sequelize,DataTypes)=>{
 
   User.init(
     {
-      user_name: DataTypes.STRING,
+      userName: DataTypes.STRING,
       email: DataTypes.STRING,
       password: DataTypes.STRING,
-      user_role: DataTypes.ENUM('merchant', 'user', 'admin'),
+      role: DataTypes.ENUM('merchant', 'user', 'admin'),
     },
     {
       sequelize,

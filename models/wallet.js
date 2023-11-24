@@ -1,12 +1,10 @@
 import { Model, DataTypes } from 'sequelize';
 
-
-
 export default (sequelize,DataTypes)=>{
   class Wallet extends Model {
     static associate(models) {
       Wallet.belongsTo(models.UserModel, {
-        foreignKey: 'user_id',
+        foreignKey: 'UserId',
         as: 'user',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
@@ -23,7 +21,7 @@ export default (sequelize,DataTypes)=>{
 
   Wallet.init(
     {
-      user_id: DataTypes.INTEGER,
+      UserId: DataTypes.INTEGER,
       usdBalance: DataTypes.INTEGER,
       usdtBalance: DataTypes.INTEGER,
     },

@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      user_id: {
+      UserId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         unique: true, // Ensure each user has only one wallet
@@ -20,10 +20,10 @@ module.exports = {
         onDelete:"CASCADE",    // Referencing the id column in the Users table
       },
       usdBalance: {
-        type: Sequelize.INTEGER
+        type: Sequelize.FLOAT
       },
       usdtBalance: {
-        type: Sequelize.INTEGER
+        type: Sequelize.FLOAT
       },
       createdAt: {
         allowNull: false,

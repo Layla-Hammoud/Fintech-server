@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      user_name: {
+      userName: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -22,7 +22,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      user_role: {
+      role: {
         type: Sequelize.ENUM('merchant', 'user', 'admin'), 
         defaultValue: 'user', 
         allowNull: false,
