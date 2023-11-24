@@ -1,46 +1,35 @@
-// models/index.js
+import { Sequelize } from "sequelize";
+import 'dotenv/config'
+import User from './user.js'
+import Wallet from './wallet.js'
 
-'use strict';
 
-import fs from 'fs';
-import path from 'path';
-import { Sequelize, DataTypes } from 'sequelize';
 
-const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
-const db = {};
+// Your Sequelize configuration
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASS,
+  {
+    host: process.env.DB_HOST,
+    dialect: "mysql",
+  }
+);
 
-let sequelize;
+const UserModel = User(sequelize,Sequelize)
+const WalletModel = Wallet(sequelize,Sequelize)
 
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+const db = {
+  sequelize,
+  Sequelize,
+  UserModel,
+  WalletModel
 }
 
-fs
-  .readdirSync(__dirname)
-  .filter(file => {
-    return (
-      file.indexOf('.') !== 0 &&
-      file !== basename &&
-      file.slice(-3) === '.js' &&
-      file.indexOf('.test.js') === -1
-    );
-  })
-  .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize, DataTypes);
-    db[model.name] = model;
-  });
-
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
+Object.keys(db).forEach((modelName) =>{
+  if(db[modelName].associate) {
+    db[modelName].associate(db)
   }
-});
-
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+  })
 
 export default db;

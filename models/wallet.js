@@ -1,28 +1,38 @@
-
 import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/db.js';
 
-class Wallet extends Model {
-  static associate(models) {
-    Wallet.belongsTo(models.User, {
-      foreignKey: 'user_id',
-      as: 'user',
-      allowNull: false,
-    });
+
+
+export default (sequelize,DataTypes)=>{
+  class Wallet extends Model {
+    static associate(models) {
+      Wallet.belongsTo(models.UserModel, {
+        foreignKey: 'user_id',
+        as: 'user',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      });
+
+      // Wallet.hasMany(models.Saving, {
+      //   foreignKey: 'wallet_id',
+      //   as: 'savings',
+      //   onDelete: 'CASCADE',
+      //   onUpdate: 'CASCADE',
+      // });
+    }
   }
-}
 
-Wallet.init(
-  {
-    usdBalance: DataTypes.INTEGER,
-    usdtBalance: DataTypes.INTEGER,
-    user_id: DataTypes.INTEGER,
-    saving_id: DataTypes.INTEGER
-  },
-  {
-    sequelize,
-    modelName: 'Wallet',
+  Wallet.init(
+    {
+      user_id: DataTypes.INTEGER,
+      usdBalance: DataTypes.INTEGER,
+      usdtBalance: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: 'Wallet',
+    }
+    
+  );
+ return Wallet;
   }
-);
 
-export default Wallet;
