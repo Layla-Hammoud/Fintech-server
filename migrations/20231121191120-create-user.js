@@ -20,6 +20,7 @@ module.exports = {
       },
       image: {
         type: Sequelize.STRING,
+        defaultValue: null
       },
       password: {
         type: Sequelize.STRING,
