@@ -33,6 +33,7 @@ export default (sequelize,DataTypes)=>{
       userName: DataTypes.STRING,
       email: DataTypes.STRING,
       password: DataTypes.STRING,
+      image: DataTypes.STRING,
       role: DataTypes.ENUM('merchant', 'user', 'admin'),
     },
     {
