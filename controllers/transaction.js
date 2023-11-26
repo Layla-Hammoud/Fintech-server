@@ -27,7 +27,7 @@ const createTransaction = async (req, res) => {
 }
 
 //function to update balances according to the status of transaction
-const updateWalletBalances=async(userId,amountSent,amountReceived,type,status)=>{
+const updateWalletBalances = async (userId, amountSent, amountReceived, type, status) => {
     try {
 
         //changing wallet balance in transaction case
@@ -44,7 +44,7 @@ const updateWalletBalances=async(userId,amountSent,amountReceived,type,status)=>
                 [usdBalance]: Sequelize.literal(`${usdBalance}+${amountSent}`),
                 [usdtBalance]: Sequelize.literal(`${usdtBalance}-${amountReceived}`)
             },
-                { where: { UserId:userId } }
+                { where: { UserId: userId } }
             )
         } else if (type === 'transfer') {
             //changing wallet balance in transfer case
@@ -53,7 +53,7 @@ const updateWalletBalances=async(userId,amountSent,amountReceived,type,status)=>
                 [usdtBalance]: Sequelize.literal(`${usdtBalance}-${amountReceived}`)
 
             },
-                { where: { UserId:userId } }
+                { where: { UserId: userId } }
             )
 
 
@@ -85,9 +85,9 @@ const editTransaction = async (req, res) => {
             const editedTrans = await TransactionModel.findByPk(id);
 
             if (editedTrans.status === 'completed') {
-               await updateWalletBalances(editedTrans.senderId,editedTrans.amountSent,editedTrans.amountReceived,editedTrans.type,editedTrans.status)
-               await updateWalletBalances(editedTrans.receiverId,editedTrans.amountSent,editedTrans.amountReceived,editedTrans.type,editedTrans.status)
-            
+                await updateWalletBalances(editedTrans.senderId, editedTrans.amountSent, editedTrans.amountReceived, editedTrans.type, editedTrans.status)
+                await updateWalletBalances(editedTrans.receiverId, editedTrans.amountSent, editedTrans.amountReceived, editedTrans.type, editedTrans.status)
+
             } else {
                 // Response for incomplete transaction
                 res.status(200).json({ message: "Transaction updated successfully", data: editedTrans });
