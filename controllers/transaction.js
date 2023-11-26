@@ -31,7 +31,9 @@ const editTransaction = async (req, res) => {
                 }
             }
         )
-        res.status(200).json({ "message": "Transaction Edited successfully", "data": updatedTrans });
+       if(updatedTrans>0) {const editedTrans=await TransactionModel.findByPk(id);
+        res.status(200).json({ "message": "Transaction Edited successfully", "data": editedTrans });}
+       else { res.status(404).json({ "message": "Transaction not found" });}
 
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -42,20 +44,32 @@ const editTransaction = async (req, res) => {
 
 const deleteTransaction = async (req, res) => {
     const { id } = req.body;
-    const findedTrans = await TransactionModel.findByPk(id);
-    if (findedTrans.status !== 'confirmed') {
-        try {
-            await findedTrans.destroy();
-            res.status(200).jon({ message: "Transaction deleted successufly" });
-        } catch (error) {
+    try {
+        const findedTrans = await TransactionModel.findByPk(id);
+        if (findedTrans.status !== 'completed') {
+            try {
+                await findedTrans.destroy();
+                res.status(200).json({ message: "Transaction deleted successufly" });
+            } catch (error) {
 
-            res.status(400).json({ error: error.message })
+                res.status(400).json({ error: error.message })
+            }
+        } else {
+            res.status(400).json({ error: "Transaction confirmed, you are not able to delete it anymore" })
         }
-    } else {
-        res.status(400).json({ error: "Transaction confirmed, you are not able to delete it anymore" })
+    } catch (error) {
+        res.status(400).json({ message: "No transaction found " })
     }
+
 
 }
 
+const getTransaction = async (req, res) => {
+    try {
+        const transactions = await TransactionModel.findAll();
+        res.status(200).json({ data: transactions });
 
-export { createTransaction, editTransaction, deleteTransaction }
+    } catch (error) { res.status(400).json({ message: "there is no transaction yet" }) }
+}
+
+export { createTransaction, editTransaction, deleteTransaction, getTransaction }
