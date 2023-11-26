@@ -10,11 +10,11 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       amountSent: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
         allowNull: false,
       },
       amountReceived: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
         allowNull: false,
         defaultValue: 0 
       },
@@ -24,6 +24,7 @@ module.exports = {
       },
       status: {
         type: Sequelize.ENUM('pending', 'completed','canceled'),
+        defaultValue:'pending'
       },
       senderId: { 
         allowNull: false,
