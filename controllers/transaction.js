@@ -135,15 +135,3 @@ const getTransaction = async (req, res) => {
 export { createTransaction, editTransaction, deleteTransaction, getTransaction }
 
 
-
-//    //getting wallet for each user
-//    if (editTransaction.status === 'completed')
-//    try {
-//        let walletSent = await WalletModel.findOne(send);
-//        let walletReceiver = await WalletModel.findByPk(receiverId);
-
-//        if (!walletReceiver || !walletSent) { res.status(404).json({ error: "there is no user has such id" }) }
-
-//    } catch (error) {
-//        res.status(500).json({ error: error.message })
-//    }
