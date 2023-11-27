@@ -1,15 +1,26 @@
 import db from "../models/index.js";
 const {UserModel,PromotionModel} = db
+import {check , validationResult} from 'express-validator'
+
+
+
 
 //create promotion
 export const createPromotion = async(req,res)=>{
+    await Promise.all([
+        check('id').notEmpty().isInt().withMessage('please enter a valid number for id').run(req),
+        check('name', 'code').notEmpty().withMessage('please enter a valid name').run(req),
+        check('amount').notEmpty().isNumeric().withMessage('please enter a valid amount').run(req),
+        check('startDate', 'endDate').notEmpty().isISO8601().withMessage('enter a valid Date').run(req)
+    ])
+
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({errors: errors.array()})
+    }
     //request
     const{name,code,amount,detail,startDate,endDate,MerchantId} = req.body;
-    //check if present in request body
-    if(!name || !code || !amount || ! detail || !startDate || ! endDate || ! MerchantId){
-        return res.status(400).json({ error: "Missing required fields" });
-    }
-    //create promotion
+ 
     try{
         const merchant = await UserModel.findByPk(MerchantId)
         if (!merchant){
@@ -50,9 +61,19 @@ export const getAllPromotions = async(req,res)=> {
 //get promotion by id
 
 export const getPromotionById = async(req,res)=>{
-    const {id} = req.params;
+    // Validation using express-validator
+    await Promise.all([
+        check('id').notEmpty().isInt().withMessage('please enter a valid number for id').run(req),
+    ]);
+
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const id = req.body.id
     try{
-        const promotions = await PromotionModel.findByPk(id ,{include : UserModel});
+        const promotions = await PromotionModel.findByPk(id);
         if(promotions){
             res.status(200).json({promotion:promotions})
         }else{
@@ -68,6 +89,17 @@ export const getPromotionById = async(req,res)=>{
 
 export const updatePromotion = async (req, res) => {
 
+    await Promise.all([
+        check('id').notEmpty().isInt().withMessage('please enter a valid number for id').run(req),
+        check('name', 'code').notEmpty().withMessage('please enter a valid name').run(req),
+        check('amount').notEmpty().isNumeric().withMessage('please enter a valid amount').run(req),
+        check('startDate', 'endDate').notEmpty().isISO8601().withMessage('enter a valid Date').run(req)
+    ])
+
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({errors: errors.array()})
+    }
     const { id,name, code, amount, detail, startDate, endDate } = req.body;
     try {
       const promotion = await PromotionModel.findByPk(id);
@@ -98,6 +130,16 @@ export const updatePromotion = async (req, res) => {
   
 //Delete promotion by ID
 export const deletePromotion = async(req,res)=>{
+    // Validation using express-validator
+    await Promise.all([
+        check('id').notEmpty().isInt().withMessage('please enter a valid number for id').run(req),
+    ]);
+
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
     const id =req.body.id
     try{
         const deletePromotionById = await PromotionModel.destroy({ where: { id: id } });
