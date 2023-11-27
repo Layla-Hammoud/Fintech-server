@@ -1,7 +1,7 @@
 import  jwt  from "jsonwebtoken";
 import db from '../models/index.js'
-import bcrypt from "bcryptjs"
 import fs from "fs";
+
 const {UserModel,WalletModel} = db
 
 const register = async (request, response) => {
@@ -16,13 +16,11 @@ const register = async (request, response) => {
       });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password, salt)
     email = email.toLowerCase()
     const newUser = await UserModel.create({
       userName,
       email,
-      password: hash,
+      password,
       role
     });
 
@@ -64,14 +62,19 @@ const login = async (request, response) => {
 
     // Generate JWT token
     const jwtToken = jwt.sign(
-      { email: user.email, id: user.id },
+      { email: user.email, id: user.id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );
 
+    response.cookie('accessToken', jwtToken, {
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production', // Set to true in production (requires HTTPS)
+    });
+
     return response.status(200).json({
-      accessToken: jwtToken,
-      id: user.id
+      message:jwtToken
     });
   } catch (err) {
     return response.status(401).json({ message: err.message, success: false });
@@ -81,8 +84,13 @@ const login = async (request, response) => {
 
 const getUsers = async (request, response) => {
   try {
+    const { page = 1, limit = 10 } = request.query;
+    const offset = (page - 1) * limit;
     // Fetching all users from the database
-    const users = await UserModel.findAll();
+    const users = await UserModel.findAll({
+      limit: parseInt(limit, 10),
+      offset: parseInt(offset, 10),
+    });
 
     return response.status(200).json({
       data: users,

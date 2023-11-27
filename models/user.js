@@ -1,5 +1,5 @@
 import { Model } from 'sequelize';
-
+import bcrypt from "bcryptjs"
 export default (sequelize,DataTypes)=>{
   class User extends Model {
     static associate(models) {
@@ -40,7 +40,15 @@ export default (sequelize,DataTypes)=>{
       sequelize,
       modelName: 'User',
       timestamps: true,
+      hooks: {
+        beforeCreate: async (user) => {
+          if (user.password) {
+            const saltRounds = 10; // Number of salt rounds for hashing
+            const hashedPassword = await bcrypt.hash(user.password, saltRounds);
+            user.password = hashedPassword;
+          }
+        }
     }
-  );
+   } );
   return User;
 }

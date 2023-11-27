@@ -4,6 +4,7 @@ import cors from "cors";
 import userRoute from './routes/user.js'
 import db from './models/index.js'
 import morgan from "morgan";
+import cookieParser from "cookie-parser";
 // Create an instance of Express
 const app = express();
 
@@ -11,7 +12,8 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use(morgan('dev'))
+app.use(morgan('dev'));
+app.use(cookieParser());
 
 app.use("/api/users", userRoute);
 
