@@ -20,10 +20,12 @@ module.exports = {
         onDelete:"CASCADE",    // Referencing the id column in the Users table
       },
       usdBalance: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
+        defaultValue: 0.0 
       },
       usdtBalance: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
+        defaultValue: 0.0
       },
       createdAt: {
         allowNull: false,

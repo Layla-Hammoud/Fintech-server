@@ -2,10 +2,10 @@ import  jwt  from "jsonwebtoken";
 import db from '../models/index.js'
 import bcrypt from "bcryptjs"
 import fs from "fs";
-const {UserModel} = db
+const {UserModel,WalletModel} = db
 
 const register = async (request, response) => {
-  const { userName, email, password, role} = request.body;
+  let { userName, email, password, role} = request.body;
 
   try {
     const verifyEmail = await UserModel.findOne({ where: { email } });
@@ -18,7 +18,7 @@ const register = async (request, response) => {
 
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt)
-
+    email = email.toLowerCase()
     const newUser = await UserModel.create({
       userName,
       email,
@@ -26,9 +26,14 @@ const register = async (request, response) => {
       role
     });
 
+    const newWallet = await WalletModel.create({
+      UserId: newUser.id, 
+    });
+
     return response.status(201).json({
       message: 'User successfully created!',
-      result: newUser,
+      user: newUser,
+      wallet : newWallet,
       success: true
     });
   } catch (error) {
