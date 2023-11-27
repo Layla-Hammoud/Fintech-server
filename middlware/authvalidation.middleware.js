@@ -1,4 +1,4 @@
-import { validateLogin, validateRegister } from "./authvalidation";
+import { validateLogin, validateRegister } from "./authvalidation.js";
 
 const registerValidation = (request, response, next) => {
 
@@ -17,7 +17,6 @@ const registerValidation = (request, response, next) => {
   };
 
   const logInValidation = (request, response, next) => {
-
     const validationErrors = validateLogin(request.body);
   
     if (Object.keys(validationErrors).length > 0) {

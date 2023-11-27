@@ -1,6 +1,7 @@
-import { jwt } from "jsonwebtoken";
+import  jwt  from "jsonwebtoken";
 import db from '../models/index.js'
 import bcrypt from "bcryptjs"
+import fs from "fs";
 const {UserModel} = db
 
 const register = async (request, response) => {
@@ -18,7 +19,7 @@ const register = async (request, response) => {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt)
 
-    const newUser = await User.create({
+    const newUser = await UserModel.create({
       userName,
       email,
       password: hash,
@@ -63,9 +64,9 @@ const login = async (request, response) => {
       { expiresIn: "24h" }
     );
 
-    return res.status(200).json({
+    return response.status(200).json({
       accessToken: jwtToken,
-      userId: user.userId
+      id: user.id
     });
   } catch (err) {
     return response.status(401).json({ message: err.message, success: false });
@@ -93,7 +94,7 @@ const getUsers = async (request, response) => {
 
 
 const getUser = async (request, response) => {
-  const { id } = request.body
+  const { id } = request.params
 
   try {
     // Fetching all users from the database
@@ -118,7 +119,7 @@ const getUser = async (request, response) => {
 
 const updateProfile = async (request, response) => {
   try {
-    const id = request.params.id; // Assuming you get the user ID from params
+    const id = request.params.id; 
 
     const user = await UserModel.findByPk(id);
 
@@ -138,6 +139,11 @@ const updateProfile = async (request, response) => {
 
     // If everything is successful, save the image path
     if (imagePath) {
+      fs.unlink(user.image, (err) => {
+        if (err) {
+          console.error("Error deleting file:", err);
+        }
+      });
       user.image = imagePath;
       await user.save();
     }
@@ -145,8 +151,8 @@ const updateProfile = async (request, response) => {
     return response.status(200).json({ message: "Profile updated successfully" });
   } catch (error) {
     // If there's an error, delete the uploaded file (if it exists) to avoid saving incomplete data
-    if (req.file) {
-      fs.unlink(req.file.path, (err) => {
+    if (request.file) {
+      fs.unlink(request.file.path, (err) => {
         if (err) {
           console.error("Error deleting file:", err);
         }

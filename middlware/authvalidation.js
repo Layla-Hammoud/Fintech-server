@@ -1,4 +1,4 @@
-import { validator } from "validator";
+import  validator  from "validator";
 
 const validateRegister = (data) => {
     const errors = {};
@@ -15,12 +15,12 @@ const validateRegister = (data) => {
       errors.password = 'Password must be at least 8 characters.';
     }
 
-    if (!validator.matches(password, /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*()]).{8,}$/)){
+    if (!validator.matches(data.password, /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*()]).{8,}$/)){
         errors.password = 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
     }
   
     if (!['user', 'merchant'].includes(data.role)) {
-        errors.role = 'Role must be either "user" or "merchant".';
+        errors.role = 'Role must be either user or merchant.';
     }
   
     return errors;
@@ -37,7 +37,7 @@ const validateRegister = (data) => {
         errors.password = 'Password must be at least 8 characters.';
       }
   
-      if (!validator.matches(password, /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*()]).{8,}$/)){
+      if (!validator.matches(data.password, /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*()]).{8,}$/)){
           errors.password = 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
       }
   
