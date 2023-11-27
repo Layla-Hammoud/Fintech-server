@@ -2,6 +2,8 @@ import express from "express";
 import "dotenv/config.js";
 import cors from "cors";
 import userRoute from './routes/user.js'
+import promoRouter from "./routes/promotionRouter.js";
+
 import db from './models/index.js'
 // Create an instance of Express
 const app = express();
@@ -13,6 +15,7 @@ app.use(cors());
 
 
 app.use("/api/users", userRoute);
+app.use("/api/promotions",promoRouter)
 
 
 //the port where your application will listen
