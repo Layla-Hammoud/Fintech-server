@@ -8,7 +8,7 @@ const promoRouter = express.Router();
 promoRouter.post('/create',createPromotion);
 promoRouter.get('/read' ,getAllPromotions);
 promoRouter.get('/read/:id' , getPromotionById);
-promoRouter.put('/update'/updatePromotion);
+promoRouter.put('/update', updatePromotion);
 promoRouter.delete('/delete', deletePromotion)
 
 
