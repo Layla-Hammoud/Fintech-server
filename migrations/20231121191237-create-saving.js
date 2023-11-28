@@ -28,6 +28,7 @@ module.exports = {
       },
       status: {
         type: Sequelize.ENUM('completed', 'incompleted'),
+        defaultValue:'incompleted'
       },
       createdAt: {
         allowNull: false,
