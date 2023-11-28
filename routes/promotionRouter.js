@@ -1,5 +1,5 @@
 import express from "express";
-import {createPromotion , getAllPromotions , getPromotionById, updatePromotion,deletePromotion} from '../controllers/promotionController.js'
+import {createPromotion , getAllPromotions , updatePromotion,deletePromotion,getPromotionsByMerchant} from '../controllers/promotionController.js'
 
 
 const promoRouter = express.Router();
@@ -7,7 +7,7 @@ const promoRouter = express.Router();
 
 promoRouter.post('/create',createPromotion);
 promoRouter.get('/read' ,getAllPromotions);
-promoRouter.get('/read/:id' , getPromotionById);
+promoRouter.get('/read/:merchantId',getPromotionsByMerchant);
 promoRouter.put('/update', updatePromotion);
 promoRouter.delete('/delete', deletePromotion)
 
