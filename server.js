@@ -14,8 +14,9 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));
 app.use(cookieParser());
-
-app.use("/api/users", userRoute);
+app.use("/api/users", userRoute); 
+app.use("/api/wallet", walletRoute);
+app.use("/api/saving", savingRoute);
 
 
 //the port where your application will listen
