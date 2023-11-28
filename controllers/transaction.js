@@ -120,11 +120,11 @@ const editTransaction = async (req, res) => {
                 console.log(editedTrans.status)
 
                 try {
-                    let senderWallet = await updateWalletBalanceSender(editedTrans.senderId, editedTrans.amountSent, editedTrans.amountReceived, editedTrans.type)
-                    let receiverWallet = await updateWalletBalanceReceiver(editedTrans.receiverId, editedTrans.amountSent, editedTrans.amountReceived, editedTrans.type) 
+                   await updateWalletBalanceSender(editedTrans.senderId, editedTrans.amountSent, editedTrans.amountReceived, editedTrans.type)
+                   await updateWalletBalanceReceiver(editedTrans.receiverId, editedTrans.amountSent, editedTrans.amountReceived, editedTrans.type) 
                     res.status(200).json({ message: "wallet updated successfully" });
                 }
-                catch (error) { res.status(500).json({ error: 'wallett not up' }) }
+                catch (error) { res.status(500).json({ error: 'wallett not updated' }) }
 
             } else {
                 // Response for incomplete transaction
@@ -136,7 +136,7 @@ const editTransaction = async (req, res) => {
         }
     } catch (error) {
         // Handle errors during the main transaction update
-        res.status(500).json({ error: 'ggggggg' });
+        res.status(500).json({ error: error.message});
     }
 };
 
