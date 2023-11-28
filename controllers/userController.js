@@ -16,6 +16,14 @@ const register = async (request, response) => {
       });
     }
 
+    // Check if the userName is already in use
+    const existingUserName = await UserModel.findOne({ where: { userName } });
+      if (existingUserName) {
+        return response.status(403).json({
+          message: "Username already used",
+        });
+    }
+
     email = email.toLowerCase()
     const newUser = await UserModel.create({
       userName,
@@ -62,7 +70,7 @@ const login = async (request, response) => {
 
     // Generate JWT token
     const jwtToken = jwt.sign(
-      { email: user.email, id: user.id, role: user.role },
+      { email: user.email, id: user.id, role: user.role, userName:user.userName },
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );
@@ -74,7 +82,7 @@ const login = async (request, response) => {
     });
 
     return response.status(200).json({
-      message:jwtToken
+      message:'user log in'
     });
   } catch (err) {
     return response.status(401).json({ message: err.message, success: false });
@@ -174,7 +182,22 @@ const updateProfile = async (request, response) => {
     return response.status(500).json({ message: error.message });
   }
 };
-
+const deleteUser = async (request, response) => {
+  try {
+    const id = request.params.id;
+    const user = await UserModel.findByPk(id);
+    if (!user) {
+      // Handle case where user is not found
+      return { success: false, message: 'User not found' };
+    }
+    // Delete the user
+    await user.destroy();
+    return response.status(200).json({ message: "user deleted" });
+  } catch (error) {
+    // Handle errors during deletion
+    return response.status(500).json({ message: error.message });
+  }
+};
 
  
-  export { register, login, getUsers, getUser, updateProfile };
+  export { register, login, getUsers, getUser, updateProfile, deleteUser };
