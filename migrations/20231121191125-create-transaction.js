@@ -19,7 +19,7 @@ module.exports = {
         defaultValue: 0 
       },
       type: {
-        type: Sequelize.ENUM('transfer', 'transaction', 'withdraw'),
+        type: Sequelize.ENUM('transfer', 'transaction', 'withdraw','deposit'),
         allowNull: false,
       },
       status: {

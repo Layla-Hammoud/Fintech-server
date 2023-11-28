@@ -1,23 +1,75 @@
 import db from '../models/index.js'
-
+import { Sequelize } from 'sequelize';
 const { TransactionModel, WalletModel } = db;
+const sequelize = new Sequelize(
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASS,
+    {
+        host: process.env.DB_HOST,
+        dialect: "mysql",
+    }
+);
+//function to update balances according to the status of transaction
+const updateWalletBalanceSender = async (userId, amountSent, amountReceived, type) => {
+
+    //changing wallet balance in transaction case
+    if (type === 'transaction') {
+
+        await WalletModel.update({
+            usdBalance: sequelize.literal(`usdBalance-${amountSent}`),
+            usdtBalance: sequelize.literal(`usdtBalance-${amountReceived}`),
+        }, { where: { UserId: userId } }
+        )
+
+    } else if (type === 'transfer') {
+        //changing wallet balance in transfer case
+
+        const updatedWalletSender = await WalletModel.update({
+            usdtBalance: sequelize.literal(`usdtBalance-${amountReceived}`)
+
+        },
+            { where: { UserId: userId } }
+        )
+
+    } else if (type === 'withdraw') {
+        const updatedWalletSender = await WalletModel.update({
+            usdtBalance: sequelize.literal(`usdtBalance-${amountReceived}`)
+
+        },
+            { where: { UserId: userId } }
+        )
+    } else if (type === 'deposit') {
+        const updatedWalletSender = await WalletModel.update({
+            usdBalance: sequelize.literal(`usdBalance+${amountSent}`),
+
+
+        },
+            { where: { UserId: userId } }
+        )
+    }
+
+}
 
 const createTransaction = async (req, res) => {
     const usdtRate = 1;
-    let amountReceived;
+    const unavailableAmount = 0.00;
+
     try {
-        const { amountSent, type, senderId, receiverId } = req.body;
+        let { amountSent, amountReceived, type, senderId, receiverId, status } = req.body;
         //amountSent:usd
         //amountReceiver:usdt
 
         //assign value according to the type of transaction 
         if (type === 'transaction') { amountReceived = amountSent * usdtRate; }
-        else if (type === 'transfer') { amountSent = 0; }
-        else if (type === 'withdraw') { }
+        else if (type === 'transfer') { amountSent = unavailableAmount; }
+        else if (type === 'withdraw') { amountSent = unavailableAmount; }
+        else if (type === 'deposit') { status = 'completed'; await updateWalletBalanceSender(senderId, amountSent, amountReceived, type) }
 
         //add transaction to the database
         const newTrans = await TransactionModel.create(
-            { amountSent, amountReceived, type, senderId, receiverId });
+            { amountSent, amountReceived, type, senderId, receiverId, status });
+
 
         res.status(200).json({ "message": "Transaction added successfully", "data": newTrans });
 
@@ -26,51 +78,31 @@ const createTransaction = async (req, res) => {
     }
 }
 
-//function to update balances according to the status of transaction
-const updateWalletBalances = async (userId, amountSent, amountReceived, type, status) => {
-    try {
-
-        //changing wallet balance in transaction case
-        if (type === 'transaction') {
-            const updatedWalletSender = await WalletModel.update({
-                [usdBalance]: Sequelize.literal(`${usdBalance}-${amountSent}`),
-                [usdtBalance]: Sequelize.literal(`${usdtBalance}+${amountReceived}`)
-
-            }, { where: { UserId: userId } }
-            )
 
 
-            const updatedWalletReceiver = await WalletModel.update({
-                [usdBalance]: Sequelize.literal(`${usdBalance}+${amountSent}`),
-                [usdtBalance]: Sequelize.literal(`${usdtBalance}-${amountReceived}`)
-            },
-                { where: { UserId: userId } }
-            )
-        } else if (type === 'transfer') {
-            //changing wallet balance in transfer case
+const updateWalletBalanceReceiver = async (userId, amountSent, amountReceived, type) => {
 
-            const updatedWalletSender = await WalletModel.update({
-                [usdtBalance]: Sequelize.literal(`${usdtBalance}-${amountReceived}`)
+    //changing wallet balance in transaction case
+    if (type === 'transaction') {
 
-            },
-                { where: { UserId: userId } }
-            )
+        await WalletModel.update({
+            usdBalance: sequelize.literal(`usdBalance-${amountSent}`),
+            usdtBalance: sequelize.literal(`usdtBalance-${amountReceived}`),
+        },
+            { where: { UserId: userId } }
+        )
+    } else if (type === 'transfer') {
+        //changing wallet balance in transfer case
 
 
-            const updatedWalletReceiver = await WalletModel.update({
-                [usdtBalance]: Sequelize.literal(`${usdtBalance}+${amountReceived}`)
-            },
-                { where: { UserId: userId } }
-            )
-        }
-        // Response for 'completed' Transaction
-        res.status(200).json({ message: "Transaction and wallet updated successfully", data: editedTrans });
-    } catch (error) {
-        // Handle errors during wallet updates
-        res.status(500).json({ error: error.message });
+        await WalletModel.update({
+            usdtBalance: sequelize.literal(`usdBalance+${amountReceived}`)
+        },
+            { where: { UserId: userId } }
+        )
     }
-}
 
+}
 
 const editTransaction = async (req, res) => {
 
@@ -83,10 +115,16 @@ const editTransaction = async (req, res) => {
         )
         if (updatedTrans > 0) {
             const editedTrans = await TransactionModel.findByPk(id);
-
+            console.log(editedTrans.status)
             if (editedTrans.status === 'completed') {
-                await updateWalletBalances(editedTrans.senderId, editedTrans.amountSent, editedTrans.amountReceived, editedTrans.type, editedTrans.status)
-                await updateWalletBalances(editedTrans.receiverId, editedTrans.amountSent, editedTrans.amountReceived, editedTrans.type, editedTrans.status)
+                console.log(editedTrans.status)
+
+                try {
+                    let senderWallet = await updateWalletBalanceSender(editedTrans.senderId, editedTrans.amountSent, editedTrans.amountReceived, editedTrans.type)
+                    let receiverWallet = await updateWalletBalanceReceiver(editedTrans.receiverId, editedTrans.amountSent, editedTrans.amountReceived, editedTrans.type) 
+                    res.status(200).json({ message: "wallet updated successfully" });
+                }
+                catch (error) { res.status(500).json({ error: 'wallett not up' }) }
 
             } else {
                 // Response for incomplete transaction
@@ -98,7 +136,7 @@ const editTransaction = async (req, res) => {
         }
     } catch (error) {
         // Handle errors during the main transaction update
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: 'ggggggg' });
     }
 };
 

@@ -3,6 +3,7 @@ import "dotenv/config.js";
 import cors from "cors";
 import userRoute from './routes/user.js'
 import transactionRoute from './routes/transactions.js'
+import notificationRoute from './routes/notification.js'
 import db from './models/index.js'
 import morgan from "morgan";
 // Create an instance of Express
@@ -16,6 +17,7 @@ app.use(morgan('dev'))
 
 app.use("/api/users", userRoute);
 app.use("/api/transactions", transactionRoute);
+app.use("/api/notifications", notificationRoute);
 
 
 
