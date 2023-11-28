@@ -2,6 +2,8 @@ import express from "express";
 import "dotenv/config.js";
 import cors from "cors";
 import userRoute from './routes/user.js'
+import walletRoute from "./routes/wallet.js";
+import savingRoute from "./routes/saving.js";
 import db from './models/index.js'
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
