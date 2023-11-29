@@ -1,3 +1,4 @@
+'use strict';
 import { Model, DataTypes } from 'sequelize';
 export default (sequelize,DataTypes)=>{
 
@@ -32,8 +33,8 @@ class Transaction extends Model {
     }
   }
   Transaction.init({
-    amountSent: DataTypes.INTEGER,
-    amountReceived: DataTypes.INTEGER,
+    amountSent: DataTypes.FLOAT,
+    amountReceived: DataTypes.FLOAT,
     type: DataTypes.ENUM('transfer', 'transaction', 'withdraw'),
     status: DataTypes.ENUM('pending', 'completed','canceled'),
     senderId: DataTypes.INTEGER,
