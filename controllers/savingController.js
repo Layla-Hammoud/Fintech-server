@@ -46,9 +46,30 @@ export const createSaving = async (req , res) => {
         const{ title, goalAmount}= req.body;
         const WalletId = req.params.id;
 
+        if(!validator.isLength(title,{min: 1})){
+            return res.status(400).json({
+                success: false,
+                error: "title can not be empty",
+            });
+        }
+
+        if(!validator.isNumeric(goalAmount)){
+            return res.status(400).json({
+                success: false,
+                error: "goalAmount must be a number",
+            });
+        }
+
+        const numericGoalAmount = parseFloat(goalAmount);
+        if(numericGoalAmount <=0){
+            return res.status(400).json({
+                success: false,
+                error: "goal amount must be greater than 0",
+            });
+        }
         const newSaving = await SavingModel.create({
             title,
-            goalAmount,
+            goalAmount: numericGoalAmount,
             amount: 0,
             status: 'incompleted',
             WalletId,
@@ -83,6 +104,21 @@ export const updateSaving = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 error: "Saving is already completed. Cannot add more amount.",
+            });
+        }
+
+        if(!validator.isNumeric(amount)){
+            return res.status(400).json({
+                success: false,
+                error: "Amount must be anumber",
+            })
+        }
+
+        const numericAmount = parseFloat(amount);
+        if(numericAmount <= 0){
+            return res.status(400).json({
+                success: false,
+                error: "Amount must be greater than 0",
             });
         }
 
