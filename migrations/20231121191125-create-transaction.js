@@ -12,6 +12,8 @@ module.exports = {
       amountSent: {
         type: Sequelize.FLOAT,
         allowNull: false,
+        defaultValue: 0 
+
       },
       amountReceived: {
         type: Sequelize.FLOAT,
