@@ -7,6 +7,8 @@ import walletRoute from "./routes/wallet.js";
 import savingRoute from "./routes/saving.js";
 import transactionRoute from './routes/transactions.js'
 import notificationRoute from './routes/notification.js'
+import morgan from 'morgan'
+import cookieParser from  'cookie-parser'
 // Create an instance of Express
 const app = express();
 
