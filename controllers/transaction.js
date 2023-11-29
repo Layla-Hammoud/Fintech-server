@@ -89,7 +89,7 @@ const createTransaction = async (req, res) => {
         }
 
         if (type === 'transaction') {
-            amountReceived = amountSent * usdtRate * promotionDiscount;
+            amountReceived = amountSent * usdtRate * (1+(promotionDiscount/100));
         } else if (type === 'transfer') {
             status = 'completed';
         } else if (type === 'deposit') {
