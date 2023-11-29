@@ -2,6 +2,7 @@ import express from "express";
 import "dotenv/config.js";
 import cors from "cors";
 import userRoute from './routes/user.js'
+import promoRouter from "./routes/promotionRouter.js";
 import db from './models/index.js'
 import walletRoute from "./routes/wallet.js";
 import savingRoute from "./routes/saving.js";
@@ -21,6 +22,7 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use("/api/users", userRoute); 
+app.use("/api/promotions",promoRouter)
 app.use("/api/wallet", walletRoute);
 app.use("/api/saving", savingRoute);
 app.use("/api/transactions", transactionRoute);
