@@ -1,12 +1,12 @@
-import  jwt  from "jsonwebtoken";
+import { verifyToken } from "../utils/jwt";
 
 
 const isAuthenticated = (request, response, next) => {
     try {
-      const token = request.headers.authorization.split(' ')[1];
+      const token = request.cookies.token;
       if (!token) throw new Error('Token not provided');
   
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = verifyToken(token);
       request.userData = decoded;
       next();
     } catch (error) {

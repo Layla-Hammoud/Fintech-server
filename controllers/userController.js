@@ -1,7 +1,7 @@
 import  jwt  from "jsonwebtoken";
 import db from '../models/index.js'
 import fs from "fs";
-
+import { generateToken } from "../utils/jwt.js";
 const {UserModel,WalletModel} = db
 
 const register = async (request, response) => {
@@ -69,11 +69,7 @@ const login = async (request, response) => {
     }
 
     // Generate JWT token
-    const jwtToken = jwt.sign(
-      { email: user.email, id: user.id, role: user.role, userName:user.userName },
-      process.env.JWT_SECRET,
-      { expiresIn: "24h" }
-    );
+    const jwtToken = generateToken(user)
 
     response.cookie('accessToken', jwtToken, {
       httpOnly: true,
