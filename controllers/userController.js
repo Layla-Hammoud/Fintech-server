@@ -194,6 +194,17 @@ const deleteUser = async (request, response) => {
     return response.status(500).json({ message: error.message });
   }
 };
+ const logout = async (request, response) => {
+  try{
+    response.clearCookie('accessToken');
+    response.status(200).json({message:'Logged out'});
+  } catch{
+    return response.status(401).json({
+      success: false,
+      message: error.message
+    });
+  }
 
+}
  
-  export { register, login, getUsers, getUser, updateProfile, deleteUser };
+  export { register, login, getUsers, getUser, updateProfile, deleteUser,logout };

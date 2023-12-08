@@ -3,7 +3,7 @@ import { verifyToken } from "../utils/jwt";
 
 const isAuthenticated = (request, response, next) => {
     try {
-      const token = request.cookies.token;
+      const token = request.cookies.accessToken;
       if (!token) throw new Error('Token not provided');
   
       const decoded = verifyToken(token);
