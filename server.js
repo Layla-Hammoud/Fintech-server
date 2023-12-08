@@ -13,10 +13,14 @@ import cookieParser from  'cookie-parser'
 // Create an instance of Express
 const app = express();
 
-
+const corsOptions = {
+  origin: 'http://localhost:3000', // Allow only your frontend origin
+  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+};
 
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 
 
 app.use(morgan('dev'));

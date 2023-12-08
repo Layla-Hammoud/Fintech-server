@@ -33,7 +33,7 @@ const updateWalletBalance = async (userId, amountSent, amountReceived, type, rol
             updateFields.usdBalance = sequelize.literal(`usdBalance-${amountSent}`);
         } else {
             updateFields.usdtBalance = sequelize.literal(`usdtBalance-${amountReceived}`);
-            updateFields.usdBalance = sequelize.literal(`usdBalance-${amountSent}`);
+            updateFields.usdBalance = sequelize.literal(`usdBalance+${amountSent}`);
         }
     } else if (type === 'withdraw') {
         if (role === 'sender') {

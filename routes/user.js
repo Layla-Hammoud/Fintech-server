@@ -5,7 +5,7 @@ import { logInValidation, registerValidation } from '../middlware/authvalidation
 import { isAuthenticated, isAuthorizedUser} from '../middlware/authMiddleware.js';
 const router = express.Router();
 
-router.get('/:id',isAuthenticated, getUser);
+router.get('/user',isAuthenticated, getUser);
 router.delete('/:id',isAuthenticated, isAuthorizedUser(['admin']), deleteUser);
 router.get('/', isAuthenticated, isAuthorizedUser(['admin']), getUsers);
 router.put('/:id/profile', isAuthenticated, isAuthorizedUser(['merchant']), upload.single("image"), updateProfile);

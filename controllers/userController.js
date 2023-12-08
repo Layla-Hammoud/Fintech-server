@@ -1,4 +1,4 @@
-import  jwt  from "jsonwebtoken";
+import bcrypt from "bcryptjs"
 import db from '../models/index.js'
 import fs from "fs";
 import { generateToken } from "../utils/jwt.js";
@@ -52,6 +52,7 @@ const register = async (request, response) => {
 
 const login = async (request, response) => {
   try {
+    console.log(request.body)
     const { email, password } = request.body;
 
     // Find the user by email
@@ -111,7 +112,7 @@ const getUsers = async (request, response) => {
 
 
 const getUser = async (request, response) => {
-  const { id } = request.params
+  const { id } = request.userData
 
   try {
     // Fetching all users from the database
