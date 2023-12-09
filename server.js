@@ -6,8 +6,14 @@ import promoRouter from "./routes/promotionRouter.js";
 import db from './models/index.js'
 import walletRoute from "./routes/wallet.js";
 import savingRoute from "./routes/saving.js";
+import promoRouter from "./routes/promotionRouter.js";
+import db from './models/index.js'
+import walletRoute from "./routes/wallet.js";
+import savingRoute from "./routes/saving.js";
 import transactionRoute from './routes/transactions.js'
 import notificationRoute from './routes/notification.js'
+import morgan from 'morgan'
+import cookieParser from  'cookie-parser'
 import morgan from 'morgan'
 import cookieParser from  'cookie-parser'
 // Create an instance of Express
@@ -23,6 +29,12 @@ app.use(express.json());
 app.use(cors(corsOptions));
 
 
+app.use(morgan('dev'));
+app.use(cookieParser());
+app.use("/api/users", userRoute); 
+app.use("/api/promotions",promoRouter)
+app.use("/api/wallet", walletRoute);
+app.use("/api/saving", savingRoute);
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use("/api/users", userRoute); 
