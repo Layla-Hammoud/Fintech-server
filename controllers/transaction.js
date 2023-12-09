@@ -2,7 +2,7 @@
 import db from '../models/index.js';
 import { Sequelize } from 'sequelize';
 import validator from 'validator';
-
+import Op  from 'sequelize';
 const { TransactionModel, WalletModel, PromotionModel, UserModel } = db;
 const sequelize = new Sequelize(
     process.env.DB_NAME,
@@ -84,12 +84,12 @@ const createTransaction = async (req, res) => {
         if (code !== 'unavailable') {
             const promotion = await PromotionModel.findOne({ where: { code: code } });
             if (promotion) {
-                promotionDiscount =(1+ (promotion.amount)/100);
+                promotionDiscount = (1 + (promotion.amount) / 100);
             }
         }
 
         if (type === 'transaction') {
-            amountReceived = amountSent * usdtRate *(promotionDiscount);
+            amountReceived = amountSent * usdtRate * (promotionDiscount);
         } else if (type === 'transfer') {
             status = 'completed';
         } else if (type === 'deposit') {
@@ -241,12 +241,17 @@ const getTransactions = async (req, res) => {
 
 const getTransactionUser = async (req, res) => {
     const page = req.query.page || 1;
-    const userId=req.body.id;
+    const userId = req.body.id;
     let limit = 7; // Number of transactions per page
 
     try {
         const transactions = await TransactionModel.findAndCountAll({
-            where:{id:userId},
+            where: {
+                [Op.or]: [
+                    { senderId: userId },
+                    { receiverId: userId }
+                ]
+            },
             limit: limit,
             offset: (page - 1) * limit,
             order: [['createdAt', 'DESC']],
@@ -266,4 +271,4 @@ const getTransactionUser = async (req, res) => {
 
 
 
-export { createTransaction, editTransaction, deleteTransaction, getTransactions,getTransactionUser };
+export { createTransaction, editTransaction, deleteTransaction, getTransactions, getTransactionUser };
