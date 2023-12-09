@@ -241,6 +241,7 @@ const getTransactions = async (req, res) => {
 
 const getTransactionUser = async (req, res) => {
     const page = req.query.page || 1;
+    const userId=req.body.id;
     let limit = 7; // Number of transactions per page
 
     try {
