@@ -2,7 +2,7 @@
 import db from '../models/index.js';
 import { Sequelize } from 'sequelize';
 import validator from 'validator';
-import Op  from 'sequelize';
+import{ Op  }from 'sequelize';
 const { TransactionModel, WalletModel, PromotionModel, UserModel } = db;
 const sequelize = new Sequelize(
     process.env.DB_NAME,
@@ -239,7 +239,7 @@ const getTransactions = async (req, res) => {
 };
 
 
-const getTransactionMerchant = async (req, res) => {
+const getTransactionUser = async (req, res) => {
     const page = req.query.page || 1;
     const userId = req.body.id;
     let limit = 7; // Number of transactions per page
@@ -247,23 +247,23 @@ const getTransactionMerchant = async (req, res) => {
     try {
         const transactions = await TransactionModel.findAndCountAll({
             where: {
-                // [sequelize.Op.or]: [
-                //     { senderId: userId },
-                //     { receiverId: userId }
-                // ]
-                receiverId:userId
+                [Op.or]: [
+                    { senderId: userId },
+                    { receiverId: userId }
+                ]
             },
             limit: limit,
             offset: (page - 1) * limit,
             order: [['createdAt', 'DESC']],
         });
 
-        res.status(200).json({
+    if (transactions===null){res.status(200).json({
             data: transactions.rows,
             totalItems: transactions.count,
             totalPages: Math.ceil(transactions.count / limit),
             currentPage: page,
-        });
+        });}
+        else res.status(404).json({error:'There no transcations yet'})
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -272,4 +272,4 @@ const getTransactionMerchant = async (req, res) => {
 
 
 
-export { createTransaction, editTransaction, deleteTransaction, getTransactions, getTransactionMerchant };
+export { createTransaction, editTransaction, deleteTransaction, getTransactions, getTransactionUser };
