@@ -2,7 +2,8 @@
 import db from '../models/index.js';
 import { Sequelize } from 'sequelize';
 import validator from 'validator';
-import{ Op  }from 'sequelize';
+import Op  from 'sequelize';
+import { response } from 'express';
 const { TransactionModel, WalletModel, PromotionModel, UserModel } = db;
 const sequelize = new Sequelize(
     process.env.DB_NAME,
@@ -239,31 +240,29 @@ const getTransactions = async (req, res) => {
 };
 
 
-const getTransactionUser = async (req, res) => {
-    const page = req.query.page || 1;
-    const userId = req.body.id;
-    let limit = 7; // Number of transactions per page
+const getTransactionMerchant = async (req, res) => {
+    const userId = req.params.id;
 
     try {
         const transactions = await TransactionModel.findAndCountAll({
             where: {
-                [Op.or]: [
-                    { senderId: userId },
-                    { receiverId: userId }
-                ]
+                receiverId:userId
             },
-            limit: limit,
-            offset: (page - 1) * limit,
-            order: [['createdAt', 'DESC']],
         });
 
-    if (transactions===null){res.status(200).json({
-            data: transactions.rows,
-            totalItems: transactions.count,
-            totalPages: Math.ceil(transactions.count / limit),
-            currentPage: page,
-        });}
-        else res.status(404).json({error:'There no transcations yet'})
+        const fullTransactions = await Promise.all(transactions.rows.map(async transaction => {
+            const sender = await UserModel.findByPk(transaction.senderId);
+            const receiver = await UserModel.findByPk(transaction.receiverId);
+            return {
+                ...transaction.toJSON(),
+                senderUsername: sender ? sender.userName : 'Unknown',
+                receiverUsername: receiver ? receiver.userName : 'Unknown'
+            };
+        }));
+
+        res.status(200).json({
+            data: fullTransactions,
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
