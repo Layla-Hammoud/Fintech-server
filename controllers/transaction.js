@@ -84,12 +84,12 @@ const createTransaction = async (req, res) => {
         if (code !== 'unavailable') {
             const promotion = await PromotionModel.findOne({ where: { code: code } });
             if (promotion) {
-                promotionDiscount = promotion.amount;
+                promotionDiscount =(1+ (promotion.amount)/100);
             }
         }
 
         if (type === 'transaction') {
-            amountReceived = amountSent * usdtRate *( 1+(promotionDiscount/100));
+            amountReceived = amountSent * usdtRate *(promotionDiscount);
         } else if (type === 'transfer') {
             status = 'completed';
         } else if (type === 'deposit') {
@@ -238,4 +238,31 @@ const getTransactions = async (req, res) => {
     }
 };
 
-export { createTransaction, editTransaction, deleteTransaction, getTransactions };
+
+const getTransactionUser = async (req, res) => {
+    const page = req.query.page || 1;
+    let limit = 7; // Number of transactions per page
+
+    try {
+        const transactions = await TransactionModel.findAndCountAll({
+            where:{id:userId},
+            limit: limit,
+            offset: (page - 1) * limit,
+            order: [['createdAt', 'DESC']],
+        });
+
+        res.status(200).json({
+            data: transactions.rows,
+            totalItems: transactions.count,
+            totalPages: Math.ceil(transactions.count / limit),
+            currentPage: page,
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+
+
+export { createTransaction, editTransaction, deleteTransaction, getTransactions,getTransactionUser };
