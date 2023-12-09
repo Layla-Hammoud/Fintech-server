@@ -273,3 +273,8 @@ const getTransactionUser = async (req, res) => {
 
 
 export { createTransaction, editTransaction, deleteTransaction, getTransactions, getTransactionUser };
+
+
+
+//////////////////////////////////
+///Fetching

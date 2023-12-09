@@ -8,6 +8,6 @@ router.post('/',createTransaction);
 router.put('/edit-transaction',isAuthenticated,isAuthorizedUser(['merchant']),editTransaction)
 router.delete('/delete-transaction',isAuthenticated,isAuthorizedUser(['user','merchant','admin']),deleteTransaction)
 router.get('/',getTransactions)
-router.get('/transactionForMerchant',getTransactionUser)
+router.get('/transactionForUser',getTransactionUser)
 
 export default router;
