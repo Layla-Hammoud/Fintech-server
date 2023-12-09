@@ -18,7 +18,7 @@ module.exports = {
       amount: {
         type: Sequelize.INTEGER
       },
-      promotionDetail: {
+      detail: {
         type: Sequelize.STRING
       },
       startDate: {

@@ -239,7 +239,7 @@ const getTransactions = async (req, res) => {
 };
 
 
-const getTransactionUser = async (req, res) => {
+const getTransactionMerchant = async (req, res) => {
     const page = req.query.page || 1;
     const userId = req.body.id;
     let limit = 7; // Number of transactions per page
@@ -247,10 +247,11 @@ const getTransactionUser = async (req, res) => {
     try {
         const transactions = await TransactionModel.findAndCountAll({
             where: {
-                [Op.or]: [
-                    { senderId: userId },
-                    { receiverId: userId }
-                ]
+                // [sequelize.Op.or]: [
+                //     { senderId: userId },
+                //     { receiverId: userId }
+                // ]
+                receiverId:userId
             },
             limit: limit,
             offset: (page - 1) * limit,
@@ -271,4 +272,4 @@ const getTransactionUser = async (req, res) => {
 
 
 
-export { createTransaction, editTransaction, deleteTransaction, getTransactions, getTransactionUser };
+export { createTransaction, editTransaction, deleteTransaction, getTransactions, getTransactionMerchant };
