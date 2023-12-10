@@ -101,12 +101,13 @@ export const getAllPromotions = async(req,res)=> {
             offset,
             limit : parseInt(pageSize)
         });
-        if(promotions){
-            res.status(200).json({Promotions: promotions})
-        }
-        else{
-            console.log('promotions not found');
-        }
+        res.status(200).json({data: promotions})
+        // if(promotions){
+        //     res.status(200).json({Promotions: promotions})
+        // }
+        // else{
+        //     console.log('promotions not found');
+        // }
     }catch(error){
         console.log(error);
         res.status(500).json('Internel Server Error')
