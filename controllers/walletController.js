@@ -21,7 +21,7 @@ export const createWallet = async (req, res) => {
 
 export const getWalletById = async (req, res) => {
     try{
-        const {id} = req.params;
+        const {id} = req.userData;
         
         const wallet = await WalletModel.findOne({
             where: {UserId: id},

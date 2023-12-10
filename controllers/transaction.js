@@ -81,7 +81,6 @@ const createTransaction = async (req, res) => {
 
         const sender = await getUserByUsername(senderUsername);
         const receiver = await getUserByUsername(receiverUsername);
-
         if (code !== 'unavailable') {
             const promotion = await PromotionModel.findOne({ where: { code: code } });
             if (promotion) {
@@ -241,12 +240,12 @@ const getTransactions = async (req, res) => {
 
 
 const getTransactionMerchant = async (req, res) => {
-    const userId = req.params.id;
+    const {id} = req.userData;
 
     try {
         const transactions = await TransactionModel.findAndCountAll({
             where: {
-                receiverId:userId
+                receiverId:id
             },
         });
 

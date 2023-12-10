@@ -110,6 +110,30 @@ const getUsers = async (request, response) => {
   }
 };
 
+const getMerchants = async (request, response) => {
+  try {
+    const { page = 1, limit = 10 } = request.query;
+    const offset = (page - 1) * limit;
+    // Fetching only users of type 'merchant' from the database
+    const users = await UserModel.findAll({
+      where: { role: 'merchant' }, // Filter condition for 'merchant' type users
+      limit: parseInt(limit, 10),
+      offset: parseInt(offset, 10),
+    });
+
+    return response.status(200).json({
+      data: users,
+      success: true,
+      message: "Merchant users list"
+    });
+  } catch (error) {
+    return response.status(401).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
 
 const getUser = async (request, response) => {
   const { id } = request.userData
@@ -208,4 +232,4 @@ const deleteUser = async (request, response) => {
 
 }
  
-  export { register, login, getUsers, getUser, updateProfile, deleteUser,logout };
+  export { register, login, getUsers,getMerchants, getUser, updateProfile, deleteUser,logout };
