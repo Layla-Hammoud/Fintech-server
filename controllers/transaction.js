@@ -2,7 +2,7 @@
 import db from '../models/index.js';
 import { Sequelize } from 'sequelize';
 import validator from 'validator';
-import Op  from 'sequelize';
+import { Op } from 'sequelize';
 import { response } from 'express';
 const { TransactionModel, WalletModel, PromotionModel, UserModel } = db;
 const sequelize = new Sequelize(
@@ -245,7 +245,35 @@ const getTransactionMerchant = async (req, res) => {
     try {
         const transactions = await TransactionModel.findAndCountAll({
             where: {
-                receiverId:id
+                receiverId: userId
+            },
+        });
+
+        const fullTransactions = await Promise.all(transactions.rows.map(async transaction => {
+            const sender = await UserModel.findByPk(transaction.senderId);
+            const receiver = await UserModel.findByPk(transaction.receiverId);
+            return {
+                ...transaction.toJSON(),
+                senderUsername: sender ? sender.userName : 'Unknown',
+                receiverUsername: receiver ? receiver.userName : 'Unknown'
+            };
+        }));
+
+        res.status(200).json({
+            data: fullTransactions,
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const getTransactionUser = async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const transactions = await TransactionModel.findAndCountAll({
+            where: {
+                [Op.or]: [{ SenderId: userId }, { receiverId: userId }]
             },
         });
 
@@ -268,6 +296,4 @@ const getTransactionMerchant = async (req, res) => {
 };
 
 
-
-
-export { createTransaction, editTransaction, deleteTransaction, getTransactions, getTransactionMerchant };
+export { createTransaction, editTransaction, deleteTransaction, getTransactions, getTransactionMerchant, getTransactionUser };
