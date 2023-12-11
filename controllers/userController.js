@@ -6,12 +6,11 @@ const {UserModel,WalletModel} = db
 
 const register = async (request, response) => {
   let { userName, email, password, role} = request.body;
-
   try {
     const verifyEmail = await UserModel.findOne({ where: { email } });
 
     if (verifyEmail) {
-      return response.status(403).json({
+      return response.status(401).json({
         message: "Email already used"
       });
     }
@@ -19,7 +18,7 @@ const register = async (request, response) => {
     // Check if the userName is already in use
     const existingUserName = await UserModel.findOne({ where: { userName } });
       if (existingUserName) {
-        return response.status(403).json({
+        return response.status(401).json({
           message: "Username already used",
         });
     }
@@ -37,9 +36,7 @@ const register = async (request, response) => {
     });
 
     return response.status(201).json({
-      message: 'User successfully created!',
-      user: newUser,
-      wallet : newWallet,
+      message: 'User successfully created please log in to your account!',
       success: true
     });
   } catch (error) {
