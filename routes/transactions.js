@@ -7,7 +7,7 @@ const router=express.Router();
 router.post('/',createTransaction);
 router.put('/edit-transaction',editTransaction)
 router.delete('/delete-transaction',isAuthenticated,isAuthorizedUser(['user','merchant','admin']),deleteTransaction)
-router.get('/',isAuthenticated,isAuthorizedUser(['user','merchant','admin']),getTransactions)
+router.get('/',getTransactions)
 router.get('/transactionForMerchant',getTransactionMerchant)
 router.get('/transactionForUser/:id',getTransactionUser)
 //isAuthenticated,isAuthorizedUser(['user','merchant','admin'])

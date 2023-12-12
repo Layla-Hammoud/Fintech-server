@@ -15,9 +15,6 @@ export const createPromotion = async (req, res) => {
     if (typeof code !== 'string') {
         return res.status(400).json({ error: 'Invalid input code' })
     }
-    if (!validator.isNumeric(amount.toString())) {
-        return res.status(400).json({ error: 'Invalid input amount' })
-    }
     if (typeof detail !== 'string') {
         return res.status(400).json({ error: 'Invalid input detail' })
     }
@@ -43,7 +40,7 @@ export const createPromotion = async (req, res) => {
             endDate,
             MerchantId,
         });
-        res.status(201).json(promotion)
+        res.status(201).json({message:'added promotion',data:promotion})
     } catch (error) {
         console.error(error)
         res.status(500).json({ error: 'Internal Server Error' })
