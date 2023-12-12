@@ -1,4 +1,4 @@
-import  jwt  from "jsonwebtoken";
+import bcrypt from "bcryptjs"
 import db from '../models/index.js'
 import fs from "fs";
 import { generateToken } from "../utils/jwt.js";
@@ -6,12 +6,11 @@ const {UserModel,WalletModel} = db
 
 const register = async (request, response) => {
   let { userName, email, password, role} = request.body;
-
   try {
     const verifyEmail = await UserModel.findOne({ where: { email } });
 
     if (verifyEmail) {
-      return response.status(403).json({
+      return response.status(401).json({
         message: "Email already used"
       });
     }
@@ -19,7 +18,7 @@ const register = async (request, response) => {
     // Check if the userName is already in use
     const existingUserName = await UserModel.findOne({ where: { userName } });
       if (existingUserName) {
-        return response.status(403).json({
+        return response.status(401).json({
           message: "Username already used",
         });
     }
@@ -37,9 +36,7 @@ const register = async (request, response) => {
     });
 
     return response.status(201).json({
-      message: 'User successfully created!',
-      user: newUser,
-      wallet : newWallet,
+      message: 'User successfully created please log in to your account!',
       success: true
     });
   } catch (error) {
@@ -52,6 +49,7 @@ const register = async (request, response) => {
 
 const login = async (request, response) => {
   try {
+    console.log(request.body)
     const { email, password } = request.body;
 
     // Find the user by email
@@ -109,9 +107,33 @@ const getUsers = async (request, response) => {
   }
 };
 
+const getMerchants = async (request, response) => {
+  try {
+    const { page = 1, limit = 10 } = request.query;
+    const offset = (page - 1) * limit;
+    // Fetching only users of type 'merchant' from the database
+    const users = await UserModel.findAll({
+      where: { role: 'merchant' }, // Filter condition for 'merchant' type users
+      limit: parseInt(limit, 10),
+      offset: parseInt(offset, 10),
+    });
+
+    return response.status(200).json({
+      data: users,
+      success: true,
+      message: "Merchant users list"
+    });
+  } catch (error) {
+    return response.status(401).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
 
 const getUser = async (request, response) => {
-  const { id } = request.params
+  const { id } = request.userData
 
   try {
     // Fetching all users from the database
@@ -207,4 +229,4 @@ const deleteUser = async (request, response) => {
 
 }
  
-  export { register, login, getUsers, getUser, updateProfile, deleteUser,logout };
+  export { register, login, getUsers,getMerchants, getUser, updateProfile, deleteUser,logout };

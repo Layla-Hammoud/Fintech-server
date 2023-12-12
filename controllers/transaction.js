@@ -2,7 +2,8 @@
 import db from '../models/index.js';
 import { Sequelize } from 'sequelize';
 import validator from 'validator';
-
+import { Op } from 'sequelize';
+import { response } from 'express';
 const { TransactionModel, WalletModel, PromotionModel, UserModel } = db;
 const sequelize = new Sequelize(
     process.env.DB_NAME,
@@ -33,7 +34,7 @@ const updateWalletBalance = async (userId, amountSent, amountReceived, type, rol
             updateFields.usdBalance = sequelize.literal(`usdBalance-${amountSent}`);
         } else {
             updateFields.usdtBalance = sequelize.literal(`usdtBalance-${amountReceived}`);
-            updateFields.usdBalance = sequelize.literal(`usdBalance-${amountSent}`);
+            updateFields.usdBalance = sequelize.literal(`usdBalance+${amountSent}`);
         }
     } else if (type === 'withdraw') {
         if (role === 'sender') {
@@ -80,16 +81,15 @@ const createTransaction = async (req, res) => {
 
         const sender = await getUserByUsername(senderUsername);
         const receiver = await getUserByUsername(receiverUsername);
-
         if (code !== 'unavailable') {
             const promotion = await PromotionModel.findOne({ where: { code: code } });
             if (promotion) {
-                promotionDiscount = promotion.amount;
+                promotionDiscount = (1 + (promotion.amount) / 100);
             }
         }
 
         if (type === 'transaction') {
-            amountReceived = amountSent * usdtRate *( 1+(promotionDiscount/100));
+            amountReceived = amountSent * usdtRate * (promotionDiscount);
         } else if (type === 'transfer') {
             status = 'completed';
         } else if (type === 'deposit') {
@@ -238,4 +238,62 @@ const getTransactions = async (req, res) => {
     }
 };
 
-export { createTransaction, editTransaction, deleteTransaction, getTransactions };
+
+const getTransactionMerchant = async (req, res) => {
+    const {id} = req.userData;
+
+    try {
+        const transactions = await TransactionModel.findAndCountAll({
+            where: {
+                receiverId: userId
+            },
+        });
+
+        const fullTransactions = await Promise.all(transactions.rows.map(async transaction => {
+            const sender = await UserModel.findByPk(transaction.senderId);
+            const receiver = await UserModel.findByPk(transaction.receiverId);
+            return {
+                ...transaction.toJSON(),
+                senderUsername: sender ? sender.userName : 'Unknown',
+                receiverUsername: receiver ? receiver.userName : 'Unknown'
+            };
+        }));
+
+        res.status(200).json({
+            data: fullTransactions,
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const getTransactionUser = async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const transactions = await TransactionModel.findAndCountAll({
+            where: {
+                [Op.or]: [{ SenderId: userId }, { receiverId: userId }]
+            },
+        });
+
+        const fullTransactions = await Promise.all(transactions.rows.map(async transaction => {
+            const sender = await UserModel.findByPk(transaction.senderId);
+            const receiver = await UserModel.findByPk(transaction.receiverId);
+            return {
+                ...transaction.toJSON(),
+                senderUsername: sender ? sender.userName : 'Unknown',
+                receiverUsername: receiver ? receiver.userName : 'Unknown'
+            };
+        }));
+
+        res.status(200).json({
+            data: fullTransactions,
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+export { createTransaction, editTransaction, deleteTransaction, getTransactions, getTransactionMerchant, getTransactionUser };

@@ -1,4 +1,4 @@
-import { verifyToken } from '../utils/jwt.js'
+import { verifyToken } from "../utils/jwt.js";
 
 
 const isAuthenticated = (request, response, next) => {
@@ -19,7 +19,7 @@ const isAuthenticated = (request, response, next) => {
  const isAuthorizedUser = (roles) => {
     return (request, response, next) => {
       const userRole = request.userData.role;
-
+      console.log(userRole)
       if (!roles.includes(userRole)) {
         return response.status(403).json({ error: 'Forbidden' });
       }

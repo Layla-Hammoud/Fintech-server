@@ -30,7 +30,7 @@ const validateRegister = (data) => {
     const errors = {};
   
     if (!validator.isEmail(data.email)) {
-      errors.emailOrUsername = 'Please enter a valid email address or username.';
+      errors.email = 'Please enter a valid email address';
     }
   
     if (!validator.isLength(data.password, { min: 8 })) {
